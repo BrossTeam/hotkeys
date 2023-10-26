@@ -1,4 +1,4 @@
-#include "TKeys.h"
+#include "hotkeys.hpp"
 
 TKeys::TKeys(void){
 }

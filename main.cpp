@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "..\TKeys\TKeys.h"
+#include "hotkeys.hpp"
 
 int main(){
 	TKeys tK;
@@ -14,7 +14,7 @@ int main(){
 		VK_RIGHT,
 		VK_LMENU | 'K' << 8,
 		VK_LMENU | 'I' << 8,
-		VK_LMENU | 'X' << 8, 
+		VK_LMENU | VK_LSHIFT | 'F' << 8, 
 	};
 
 	std::vector<std::wstring> hotKeyNames = {
@@ -24,7 +24,7 @@ int main(){
 		L"Right",
 		L"Alt+K",
 		L"Alt+I",
-		L"Alt+X"
+		L"Alt+Shift+F"
 	};
 
 	for (size_t i = 0; i < hotKeys.size(); ++i) {
