@@ -2,9 +2,10 @@
 //
 
 #include "stdafx.h"
-#include "hotkeys.hpp"
+#include "t_keys.hpp"
+#include <chrono>
 
-int main(){
+int hotkey_test(){
 	TKeys tK;
 
 	std::vector<ULONG> hotKeys = {
@@ -39,8 +40,17 @@ int main(){
 	//tK.addHotKey({ VK_LMENU,'Z' });
 	//tK.addHotKey({ VK_LMENU,'I' });
 
+    auto start_time = std::chrono::high_resolution_clock::now();
+
 	while (true) {
-		tK.scanKeys(); // Read hotkey 
+		auto end_time = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+
+		if (duration.count() > 5000)
+		{
+            tK.scanKeys(); // Read hotkey
+            std::cout << "";
+		}
 
 		for (size_t i = 0; i < hotKeys.size(); ++i) { // iterate through the hotKeys
 			if (tK.getHotKeyChanged(hotKeys.at(i))) { // if key state changed
@@ -91,3 +101,76 @@ int main(){
     return 0;
 }
 
+const int HOTKEY_ID = 1;
+
+#include <functional>
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <windows.h>
+
+class KeyRecorder
+{
+  public:
+    KeyRecorder(std::function<void(const std::vector<int> &)> callback) : callback_(callback)
+    {
+    }
+
+    void StartRecording()
+    {
+        isRecording_ = true;
+        keyStates_.clear();
+        recordingThread_ = std::thread(&KeyRecorder::RecordingThread, this);
+    }
+
+  private:
+    std::function<void(const std::vector<int> &)> callback_;
+    std::vector<int> keyStates_;
+    std::thread recordingThread_;
+    bool isRecording_ = false;
+
+    void RecordingThread()
+    {
+        auto startTime = std::chrono::steady_clock::now();
+        while (isRecording_)
+        {
+            for (int key = 0; key < 256; ++key)
+            {
+                bool isKeyPressed = GetAsyncKeyState(key) & 0x8000;
+                if (isKeyPressed && std::find(keyStates_.begin(), keyStates_.end(), key) == keyStates_.end())
+                {
+                    keyStates_.push_back(key);
+                }
+            }
+
+            auto currentTime = std::chrono::steady_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count();
+
+            if (keyStates_.size() >= 3 || duration >= 6)
+            {
+                isRecording_ = false;
+                callback_(keyStates_);
+            }
+        }
+    }
+};
+
+// Example usage:
+int main()
+{
+    KeyRecorder keyRecorder([](const std::vector<int> &keys) {
+        std::cout << "Key combination recorded: ";
+        for (int key : keys)
+        {
+            std::cout << key << " ";
+        }
+        std::cout << std::endl;
+    });
+
+    keyRecorder.StartRecording();
+
+    // Sleep to allow time for recording.
+    std::this_thread::sleep_for(std::chrono::seconds(100));
+
+    return 0;
+}
