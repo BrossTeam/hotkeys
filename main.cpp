@@ -29,7 +29,7 @@ int hotkey_test(){
 	};
 
 	for (size_t i = 0; i < hotKeys.size(); ++i) {
-		tK.addHotKey(hotKeys.at(i));
+		tK.add_hot_key(hotKeys.at(i));
 	}
 
 	//// Alternatively, manually add each one of them
@@ -48,17 +48,17 @@ int hotkey_test(){
 
 		if (duration.count() > 5000)
 		{
-            tK.scanKeys(); // Read hotkey
+            tK.scan_keys(); // Read hotkey
             std::cout << "";
 		}
 
 		for (size_t i = 0; i < hotKeys.size(); ++i) { // iterate through the hotKeys
-			if (tK.getHotKeyChanged(hotKeys.at(i))) { // if key state changed
+			if (tK.get_hot_key_changed(hotKeys.at(i))) { // if key state changed
 				std::wcout << hotKeyNames.at(i).c_str() << L": [" 
 					<< L"State -> "
-					<< (tK.getHotKeyPressed(hotKeys.at(i)) ? L"Pressed" : L"Released")
+					<< (tK.get_hot_key_pressed(hotKeys.at(i)) ? L"Pressed" : L"Released")
 					<< L", Toggle -> "
-					<< (tK.getHotKeyToggle(hotKeys.at(i)) ? L"On" : L"Off")
+					<< (tK.get_hot_key_toggle(hotKeys.at(i)) ? L"On" : L"Off")
 					<< L"]" << std::endl;
 			}
 		}
@@ -76,22 +76,22 @@ int hotkey_test(){
 		//	std::wcout << L"RIGHT:" << (tK.getHotKeyPressed(VK_RIGHT) ? L"Pressed" : L"Released") << std::endl;
 		//}
 
-		if (tK.getHotKeyPressed({ VK_LMENU,'K' }) && tK.getHotKeyChanged({ VK_LMENU,'K' })) {
+		if (tK.get_hot_key_pressed({ VK_LMENU,'K' }) && tK.get_hot_key_changed({ VK_LMENU,'K' })) {
 			// Enter key sequences automatically in a separate thread
-			std::thread t1(&TKeys::KeySequence, tK,
+			std::thread t1(&TKeys::key_sequence, tK,
 				L"Some string that will be entered automatically");
 			t1.detach();
 		}
 
-		if (tK.getHotKeyPressed({ VK_LMENU,'I' }) && tK.getHotKeyChanged({ VK_LMENU,'I' })) {
+		if (tK.get_hot_key_pressed({ VK_LMENU,'I' }) && tK.get_hot_key_changed({ VK_LMENU,'I' })) {
 			// Enter account & password automatically in a separate thread
-			std::thread t1(&TKeys::KeyAutomate, tK,
+			std::thread t1(&TKeys::key_automate, tK,
 				L"testACC123@Lol.com.jk",
 				L"SomePassword?-+=\\|<>,./;:'[]{}\"!@#$%^&*()");
 			t1.detach();
 		}
 
-		if (tK.getHotKeyToggle({ VK_LMENU,'X' })) { // Toggle initially false, toggles after press
+		if (tK.get_hot_key_toggle({ VK_LMENU,'X' })) { // Toggle initially false, toggles after press
 			std::wcout << L"Alt+Z Pressed, Exiting" << std::endl;
 			break;
 		}

@@ -13,29 +13,29 @@ class TKeys {
 public:
 	TKeys(void);
 
-	void scanKeys();
+	void scan_keys();
 
-	void addHotKey(ULONG vkCode);
-	void addHotKey(KeyCodes vkCodes);
+	void add_hot_key(ULONG vkCode);
+	void add_hot_key(KeyCodes vkCodes);
 	
-	bool getHotKeyToggle(ULONG vkCode);
-	bool getHotKeyToggle(KeyCodes vkCodes);
+	bool get_hot_key_toggle(ULONG vkCode);
+	bool get_hot_key_toggle(KeyCodes vkCodes);
 
-	bool getHotKeyPressed(ULONG vkCode);
-	bool getHotKeyPressed(KeyCodes vkCodes);
+	bool get_hot_key_pressed(ULONG vkCode);
+	bool get_hot_key_pressed(KeyCodes vkCodes);
 
-	bool getHotKeyChanged(ULONG vkCode);
-	bool getHotKeyChanged(KeyCodes vkCodes);
+	bool get_hot_key_changed(ULONG vkCode);
+	bool get_hot_key_changed(KeyCodes vkCodes);
 
-	void toggleHotKeyState(ULONG vkCode);
-	void toggleHotKeyState(KeyCodes vkCodes);
+	void toggle_hot_key_state(ULONG vkCode);
+	void toggle_hot_key_state(KeyCodes vkCodes);
 
-	void KeyPress(UINT kSC);
-	void KeyUp(UINT kSC);
-	void KeySequence(std::wstring keys);
-	void KeyAutomate(std::wstring accName, std::wstring passwd);
+	void key_press(UINT kSC);
+	void key_up(UINT kSC);
+	void key_sequence(std::wstring keys);
+	void key_automate(std::wstring accName, std::wstring passwd);
 	
-
+protected:
 	KeyMap keysPressed;
 	KeyMap keysToggle;
 	KeyMap keysChanged;

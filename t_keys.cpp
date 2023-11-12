@@ -3,7 +3,7 @@
 TKeys::TKeys(void){
 }
 
-void TKeys::scanKeys(){
+void TKeys::scan_keys(){
 	for (KeyMap::iterator it = keysPressed.begin(); it != keysPressed.end(); ++it) {
 		ULONG curKey = it->first;
 		bool pressed = (GetAsyncKeyState(curKey % 0x100) & 0x8000) != 0; // Single Key
@@ -35,7 +35,7 @@ void TKeys::scanKeys(){
 	}
 }
 
-void TKeys::addHotKey(ULONG vkCode){
+void TKeys::add_hot_key(ULONG vkCode){
 	KeyMap::iterator it = keysToggle.find(vkCode);
 	if (it == keysToggle.end()) {
 		keysPressed.insert(std::pair<ULONG, bool>(vkCode, false));
@@ -44,15 +44,15 @@ void TKeys::addHotKey(ULONG vkCode){
 	}
 }
 
-void TKeys::addHotKey(KeyCodes vkCodes){
+void TKeys::add_hot_key(KeyCodes vkCodes){
 	ULONG comboVK = 0;
 	for (size_t i = 0; i < vkCodes.size(); ++i) {
 		comboVK += vkCodes.at(i) << (i * 8);
 	}
-	addHotKey(comboVK);
+	add_hot_key(comboVK);
 }
 
-bool TKeys::getHotKeyToggle(ULONG vkCode){
+bool TKeys::get_hot_key_toggle(ULONG vkCode){
 	KeyMap::iterator it = keysToggle.find(vkCode);
 	if (it != keysToggle.end()) {
 		return it->second;
@@ -60,15 +60,15 @@ bool TKeys::getHotKeyToggle(ULONG vkCode){
 	return false;
 }
 
-bool TKeys::getHotKeyToggle(KeyCodes vkCodes){
+bool TKeys::get_hot_key_toggle(KeyCodes vkCodes){
 	ULONG comboVK = 0;
 	for (size_t i = 0; i < vkCodes.size(); ++i) {
 		comboVK += vkCodes.at(i) << (i * 8);
 	}
-	return getHotKeyToggle(comboVK);
+	return get_hot_key_toggle(comboVK);
 }
 
-bool TKeys::getHotKeyPressed(ULONG vkCode){
+bool TKeys::get_hot_key_pressed(ULONG vkCode){
 	KeyMap::iterator it = keysPressed.find(vkCode);
 	if (it != keysPressed.end()) {
 		return it->second;
@@ -76,15 +76,15 @@ bool TKeys::getHotKeyPressed(ULONG vkCode){
 	return false;
 }
 
-bool TKeys::getHotKeyPressed(KeyCodes vkCodes) {
+bool TKeys::get_hot_key_pressed(KeyCodes vkCodes) {
 	ULONG comboVK = 0;
 	for (size_t i = 0; i < vkCodes.size(); ++i) {
 		comboVK += vkCodes.at(i) << (i * 8);
 	}
-	return getHotKeyPressed(comboVK);
+	return get_hot_key_pressed(comboVK);
 }
 
-bool TKeys::getHotKeyChanged(ULONG vkCode) {
+bool TKeys::get_hot_key_changed(ULONG vkCode) {
 	KeyMap::iterator it = keysChanged.find(vkCode);
 	if (it != keysChanged.end()) {
 		return it->second;
@@ -92,32 +92,32 @@ bool TKeys::getHotKeyChanged(ULONG vkCode) {
 	return false;
 }
 
-bool TKeys::getHotKeyChanged(KeyCodes vkCodes) {
+bool TKeys::get_hot_key_changed(KeyCodes vkCodes) {
 	ULONG comboVK = 0;
 	for (size_t i = 0; i < vkCodes.size(); ++i) {
 		comboVK += vkCodes.at(i) << (i * 8);
 	}
-	return getHotKeyChanged(comboVK);
+	return get_hot_key_changed(comboVK);
 }
 
-void TKeys::toggleHotKeyState(ULONG vkCode){
+void TKeys::toggle_hot_key_state(ULONG vkCode){
 	KeyMap::iterator it = keysToggle.find(vkCode);
 	if (it != keysToggle.end()) {
 		it->second = !it->second;
 	}
 }
 
-void TKeys::toggleHotKeyState(KeyCodes vkCodes){
+void TKeys::toggle_hot_key_state(KeyCodes vkCodes){
 	ULONG comboVK = 0;
 	for (size_t i = 0; i < vkCodes.size(); ++i) {
 		comboVK += vkCodes.at(i) << (i * 8);
 	}
-	toggleHotKeyState(comboVK);
+	toggle_hot_key_state(comboVK);
 }
 
 #pragma region Keys_related
 
-void TKeys::KeyPress(UINT kSC) {
+void TKeys::key_press(UINT kSC) {
 	INPUT kinp;
 	kinp.type = INPUT_KEYBOARD;
 	kinp.ki.time = 0;
@@ -130,7 +130,7 @@ void TKeys::KeyPress(UINT kSC) {
 	SendInput(1, &kinp, sizeof(INPUT));
 }
 
-void TKeys::KeyUp(UINT kSC) {
+void TKeys::key_up(UINT kSC) {
 	INPUT kinp;
 	kinp.type = INPUT_KEYBOARD;
 	kinp.ki.time = 0;
@@ -143,7 +143,7 @@ void TKeys::KeyUp(UINT kSC) {
 	SendInput(1, &kinp, sizeof(INPUT));
 }
 
-void TKeys::KeySequence(std::wstring keys) {
+void TKeys::key_sequence(std::wstring keys) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(50 + rand() % 100));
 	for (size_t j = 0; j < keys.size(); ++j) {
 
@@ -152,13 +152,13 @@ void TKeys::KeySequence(std::wstring keys) {
 		UINT kSC = MapVirtualKey(LOBYTE(kVK), MAPVK_VK_TO_VSC);
 
 		if (upperCase) { // Press shift
-			KeyPress(MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC));
+			key_press(MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC));
 			std::this_thread::sleep_for(std::chrono::milliseconds(50 + rand() % 100));
 		}
-		KeyPress(kSC);
-		KeyUp(kSC);
+		key_press(kSC);
+		key_up(kSC);
 		if (upperCase) { // Release shift
-			KeyUp(MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC));
+			key_up(MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC));
 			std::this_thread::sleep_for(std::chrono::milliseconds(50 + rand() % 100));
 		}else{
 			std::this_thread::sleep_for(std::chrono::milliseconds(50 + rand() % 50));
@@ -166,26 +166,26 @@ void TKeys::KeySequence(std::wstring keys) {
 	}
 }
 
-void TKeys::KeyAutomate(std::wstring accName, std::wstring passwd) {
+void TKeys::key_automate(std::wstring accName, std::wstring passwd) {
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(600 + rand() % 150));
 
-	KeySequence(accName);
+	key_sequence(accName);
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(100 + rand() % 150));
 
 	UINT kSC = MapVirtualKey(VK_RETURN, MAPVK_VK_TO_VSC);
-	KeyPress(kSC);
-	KeyUp(kSC);
+	key_press(kSC);
+	key_up(kSC);
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(100 + rand() % 150));
 
-	KeySequence(passwd);
+	key_sequence(passwd);
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(100 + rand() % 150));
 
-	KeyPress(kSC);
-	KeyUp(kSC);
+	key_press(kSC);
+	key_up(kSC);
 
 	return;
 }
