@@ -4,7 +4,7 @@ project(hotkeys)
 set(TARGET ${PROJECT_NAME})
 set(TEST_TARGET ${PROJECT_NAME}_test)
 
-add_library(${TARGET} STATIC "t_keys.cpp" "hotkeys.cpp")
+add_library(${TARGET} SHARED "t_keys.cpp" "hotkeys.cpp")
 add_executable(${TEST_TARGET} "main.cpp")
 target_include_directories(${TARGET} PUBLIC .)
 
